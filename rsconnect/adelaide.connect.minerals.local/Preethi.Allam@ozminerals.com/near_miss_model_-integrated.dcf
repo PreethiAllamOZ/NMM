@@ -5,9 +5,9 @@ account: Preethi.Allam@ozminerals.com
 server: adelaide.connect.minerals.local
 hostUrl: https://adelaide.connect.minerals.local/__api__
 appId: 79
-bundleId: 300
+bundleId: 301
 url: https://adelaide.connect.minerals.local/content/79/
-when: 1638314358.43927
-lastSyncTime: 1638314358.43927
+when: 1638315115.33679
+lastSyncTime: 1638315115.33679
 asMultiple: FALSE
 asStatic: FALSE

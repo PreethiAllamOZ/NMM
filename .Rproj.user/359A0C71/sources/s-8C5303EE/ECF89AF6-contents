@@ -1,0 +1,98 @@
+require(tidyverse)
+require(caret)
+require(shinyalert)
+require(shinyWidgets)
+require(shinyjs)
+require(ranger)
+require(tools)
+require(dbplyr)
+
+library(magrittr)
+library(xgboost)
+library(raster)
+library(nabor)
+library(shinycssloaders)
+library(DT)
+library(plotly)
+
+library(ggforce)
+
+options(shiny.maxRequestSize=10000*1024^2)
+
+# 
+carra_Near_Miss_RDS_Model<-readRDS("Models/Carra_Near_Miss.RDS")
+# carra_Near_Miss_No_Vanadium_RDS_Model<-readRDS("Models/Carra_Near_Miss_No_Vanadium.RDS")
+# promhill_distance_regression_RDS_Model<-readRDS("Models/prom_hill_distance_model.rds")
+# promhill_distance_RDS_Model<-readRDS(modelfile="Models/prom_hill_distance_model.rds")
+# Starra_xgb_Model <- xgb.load(modelfile = 'Models/Starra_Near_Miss_Model.xgb')
+#xgb_west_musgraves <- xgb.load(modelfile = 'Models/West_Musgraves_Near_Miss_Model.xgb')
+
+carra_Near_Miss_RDS_Model$Variables
+
+
+datasource<-read.csv("C:/Users/allam/Downloads/Assay_Pivot_WMG.csv", stringsAsFactors = F)
+data<-datasource
+#ltdl.fix(fix.test[, 3], negs2na = TRUE, coded = -9999, zero2na = TRUE)
+data[,6:72]<-data[,6:72]%>% dplyr::na_if(9999)
+
+data[,6:72]<-sapply(data[,6:72],as.numeric)
+summary(data)
+names(data)[names(data) == 'AgPPM'] <- 'Ag'
+names(data)[names(data) == 'AsPPM'] <- 'As'
+names(data)[names(data) == 'CuPPM'] <- 'Cu'
+names(data)[names(data) == 'LaPPM'] <- 'La'
+names(data)[names(data) == 'MoPPM'] <- 'Mo'
+names(data)[names(data) == 'NiPPM'] <- 'Ni'
+names(data)[names(data) == 'PbPPM'] <- 'Pb'
+names(data)[names(data) == 'SrPPM'] <- 'Sr'
+names(data)[names(data) == 'ThPPM'] <- 'Th'
+names(data)[names(data) == 'UPPM'] <- 'U'
+names(data)[names(data) == 'VPPM'] <- 'V'
+names(data)[names(data) == 'ZnPPM'] <- 'Zn'
+names(data)[names(data) == 'ZrPPM'] <- 'Zr'
+
+
+#handle : Entire column is NA/Null
+if(sum(sapply(data$Ag, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model AgPPM,AsPPM, CuPPM, LaPPM, MoPPM, NiPPM, PbPPM, SrPPM, ThPPM, UPPM,VPPM,ZnPPM, ZrPPM need values")
+} else if (sum(sapply(data$As, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Cu, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$La, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Mo, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Ni, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Pb, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Sr, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Th, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$U, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$V, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Zn, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else if (sum(sapply(data$Zr, function(x) sum(is.na(x))))==nrow(data)){
+  print("To apply this model CrPPM,ZrPPM,ZnPPM,CoPPM,VPPM,ScPPM,MgPPM,KPPM,TiPPM,FePPM,PPPM need values")
+} else {
+  data_Complete <- data %>% drop_na(carra_Near_Miss_RDS_Model$Variables)
+  ImportFile_ToProcess <- ImportFile_Complete %>% dplyr::select(carra_Near_Miss_RDS_Model$Variables)
+  Models <- carra_Near_Miss_RDS_Model$Models
+  PredictionMatrix <- numeric(length = nrow(data_ToProcess))
+  for(i in 1:length(Models)){
+    PredictionMatrix <- PredictionMatrix + predict(Models[[i]], data = data_ToProcess)$predictions[,1]
+  }
+  
+  PredictionMatrix <- PredictionMatrix/length(Models)
+  
+  Output <- cbind(datasource_Complete,CloseValue = PredictionMatrix)
+
+  
+}
+
+

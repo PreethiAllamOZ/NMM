@@ -1,0 +1,512 @@
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617)
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+new_data_subset %>% group_by(HoleID) %>% summarise(mean(Prediction))
+downholePlot <- new_data_subset %>%
+filter(HoleID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Prediction))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+ylim(0,1)+
+ylab("Probability (0-1) \n of being within 250 of an ore bearing sample")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(450,275)+
+geom_hline(yintercept = 0.5,linetype = 'dotted', col = 'red')
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617)
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+new_data_subset %>% group_by(HoleID) %>% summarise(mean(Prediction))
+downholePlot <- new_data_subset %>%
+filter(HoleID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Prediction))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+ylim(0,1)+
+ylab("Probability (0-1) \n of being within 250 of an ore bearing sample")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)+
+geom_hline(yintercept = 0.5,linetype = 'dotted', col = 'red')
+downholePlot_Cu <- new_data_subset %>%
+filter(HoleID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Cu_ppm))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+scale_y_log10()+
+ylab("Cu_ppm")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)
+downholePlot + downholePlot_Cu + plot_annotation(title = "DD21CAL011")
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617)
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+new_data_subset %>% group_by(HoleID) %>% summarise(mean(Prediction))
+downholePlot <- new_data_subset %>%
+filter(HoleID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Prediction))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+ylim(0,1)+
+ylab("Probability (0-1) \n of being within 250 of an ore bearing sample")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)+
+geom_hline(yintercept = 0.5,linetype = 'dotted', col = 'red')
+downholePlot_Cu <- new_data_subset %>%
+filter(HoleID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Cu_ppm))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+scale_y_log10()+
+ylab("Cu_ppm")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)
+downholePlot + downholePlot_Cu + plot_annotation(title = "DD21CAL011")
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617)
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+new_data_subset %>% group_by(HoleID) %>% summarise(mean(Prediction))
+downholePlot <- new_data_subset %>%
+filter(SITE_ID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Prediction))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+ylim(0,1)+
+ylab("Probability (0-1) \n of being within 250 of an ore bearing sample")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)+
+geom_hline(yintercept = 0.5,linetype = 'dotted', col = 'red')
+downholePlot_Cu <- new_data_subset %>%
+filter(SITE_ID == "DD21DOR001") %>%
+ggplot(aes(x = Depth,
+y = Cu_ppm))+
+geom_line()+
+geom_point()+
+coord_flip()+
+scale_x_reverse(name = "Depth")+
+scale_y_log10()+
+ylab("Cu_ppm")+
+theme(
+panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(),
+panel.background = element_blank(),
+axis.line = element_blank()
+)+
+xlim(273,201)
+downholePlot + downholePlot_Cu + plot_annotation(title = "DD21CAL011")
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617)
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617, verbose = 0,objective = 'binary:logistic')
+new_data <- fread("C:/Users/pallam/OneDrive - OZ Minerals/Downloads/consolidated.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(HoleID))
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(SITE_ID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+summary(new_data_subset$Prediction)
+new_data_subset$Prediction
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+write.csv(new_data_subset)
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617, verbose = 0,objective = 'binary:logistic')
+new_data <- fread("C:/Users/pallam/Documents/XRF_results.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617, verbose = 0,objective = 'binary:logistic')
+new_data <- fread("C:/Users/pallam/Documents/XRF_results.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(SITE_ID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+new_data_subset$Prediction
+summary(new_data_subset$Prediction)
+require(data.table)
+require(tidyverse)
+require(xgboost)
+require(patchwork)
+pr_chemistry_train <- readRDS("C:/Users/pallam/OneDrive - OZ Minerals/Prepared_Training_Data.RDS")
+xgb_model <- xgboost(data = pr_chemistry_train %>% select(-Class) %>% as.matrix(),
+label = pr_chemistry_train$Class,
+nrounds = 50,
+max_depth = 7,
+min_child_weight=2.52,
+subsample=0.617, verbose = 0,objective = 'binary:logistic')
+new_data <- fread("C:/Users/pallam/Documents/XRF_results.csv")
+new_data_subset <- new_data %>%
+mutate(U_Zn = U_ppm/Zn_ppm,
+Rb_Th = Rb_ppm/Th_ppm,
+Co_Zn = Co_ppm/Zn_ppm,
+Co_Ni = Co_ppm/Ni_ppm,
+Sr_Zr = Sr_ppm/Zr_ppm,
+Rb_Zr = Rb_ppm/Zr_ppm,
+Fe_Th = Fe_ppm/Th_ppm
+) %>%
+drop_na(U_Zn,Co_Zn,Co_Ni,Sr_Zr,Rb_Zr,Fe_Th) %>%
+mutate(HoleID = toupper(SITE_ID))
+new_data_subset$Prediction <-
+predict(xgb_model,new_data_subset %>% select(all_of(xgb_model$feature_names)) %>% as.matrix())
+new_data_subset$Prediction
+summary(new_data_subset$Prediction)
+write.csv(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+View(new_data_subset)
+write.csv(new_data_subset, 'C:\\Users\\pallam\\Documents\sol.csv')
+write.csv(new_data_subset, 'C:\\Users\\pallam\\Documents\\sol.csv')
+require(tidyverse)
+require(caret)
+require(shinyalert)
+require(shinyWidgets)
+require(shinyjs)
+require(ranger)
+require(tools)
+require(dbplyr)
+library(magrittr)
+library(xgboost)
+library(raster)
+library(nabor)
+library(shinycssloaders)
+library(DT)
+library(plotly)
+library(ggforce)
+options(shiny.maxRequestSize=10000*1024^2)
+#
+# carra_Near_Miss_RDS_Model<-readRDS("Models/Carra_Near_Miss.RDS")
+# carra_Near_Miss_No_Vanadium_RDS_Model<-readRDS("Models/Carra_Near_Miss_No_Vanadium.RDS")
+# promhill_distance_regression_RDS_Model<-readRDS("Models/prom_hill_distance_model.rds")
+# promhill_distance_RDS_Model<-readRDS(modelfile="Models/prom_hill_distance_model.rds")
+# Starra_xgb_Model <- xgb.load(modelfile = 'Models/Starra_Near_Miss_Model.xgb')
+#xgb_west_musgraves <- xgb.load(modelfile = 'Models/West_Musgraves_Near_Miss_Model.xgb')
+West_musgraves_xgb_Model <- xgb.load(modelfile = 'Models/West_Musgraves_Near_Miss_Model.xgb')
+West_musgraves_RDS_Model<-readRDS("Models/West_Musgraves_Near_Miss.RDS")
+Carra_Model<-readRDS("Models/Carra_Near_Miss.RDS")
+Starra_Model_xgb_Model<-xgb.load(modelfile='Models/Starra_Near_Miss_Model.xgb')
+Starra_RDS_Model<-readRDS('Models/Starra_Near_Miss.RDS')
+datasource<-read.csv("C:/Users/pallam/OneDrive - OZ Minerals/Personal Laptop/Assay_input_WMG.csv", stringsAsFactors = F)
+Carra_Model<-readRDS("Models/Carra_Near_Miss.RDS")
+Carra_Model_No_V<-readRDS("Models/Carra_Near_Miss_No_Vanadium.RDS")
+#ltdl.fix(fix.test[, 3], negs2na = TRUE, coded = -9999, zero2na = TRUE)
+datasource[,6:72]<-sapply(datasource[,6:72],as.numeric)
+datasource[,6:72]<-sapply(datasource[,6:72],as.numeric)
+if((sum(is.na(datasource$CrPPM)))!=nrow(datasource) &(sum(is.na(datasource$ZrPPM)))!=nrow(datasource)&(sum(is.na(datasource$ZnPPM)))!=nrow(datasource) &(sum(is.na(datasource$CoPPM)))!=nrow(datasource) & (sum(is.na(datasource$VPPM)))!=nrow(datasource)&(sum(is.na(datasource$SPPM)))!=nrow(datasource) &(sum(is.na(datasource$MgPPM)))!=nrow(datasource)&(sum(is.na(datasource$KPPM)))!=nrow(datasource) &(sum(is.na(datasource$TiPPM)))!=nrow(datasource)&(sum(is.na(datasource$FePPM)))!=nrow(datasource) &(sum(is.na(datasource$PPPM)))!=nrow(datasource))
+{
+data<-datasource
+#change column names
+data <-data %>% rename(Cr_ppm=CrPPM,Zr_ppm=ZrPPM,Zn_ppm=ZnPPM,Co_ppm=CoPPM,V_ppm=VPPM,S_pc=SPPM,Mg_pc=MgPPM ,K_pc= KPPM,Ti_pc=TiPPM, Fe_pc=FePPM, P_pc=PPPM)
+# #change PPM to PC
+data$S_pc=data$S_pc/10000
+data$Mg_pc=data$Mg_pc/10000
+data$K_pc=data$K_pc/10000
+data$Ti_pc=data$Ti_pc/10000
+data$Fe_pc=data$Fe_pc/10000
+data$P_pc=data$P_pc/10000
+data<-subset(data, select = c(Project,SiteID,SampleID,DepthFrom,DepthTo,S_pc,Mg_pc,K_pc,Ti_pc,Fe_pc,P_pc,Cr_ppm,Zr_ppm,Zn_ppm,Co_ppm,V_ppm))
+data_Complete <-data %>% drop_na(West_musgraves_RDS_Model$Variables)
+data_ToProcess <- data_Complete %>% dplyr::select(West_musgraves_RDS_Model$Variables) %>% as.matrix()
+pred_res <- predict(object = West_musgraves_xgb_Model, newdata = data_ToProcess)
+datasource <- cbind(datasource,CloseValue_WM = pred_res)
+}
+if((sum(is.na(datasource$AgPPM)))!=nrow(datasource) &(sum(is.na(datasource$AsPPM)))!=nrow(datasource)(sum(is.na(datasource$VPPM)))!=nrow(datasource)&(sum(is.na(datasource$CuPPM)))!=nrow(datasource) &(sum(is.na(datasource$LaPPM)))!=nrow(datasource)&(sum(is.na(datasource$MoPPM)))!=nrow(datasource) & (sum(is.na(datasource$NiPPM)))!=nrow(datasource)&(sum(is.na(datasource$PbPPM)))!=nrow(datasource) &(sum(is.na(datasource$SrPPM)))!=nrow(datasource)&(sum(is.na(datasource$ThPPM)))!=nrow(datasource) &(sum(is.na(datasource$UPPM)))!=nrow(datasource) &(sum(is.na(datasource$ZnPPM)))!=nrow(datasource)&(sum(is.na(datasource$ZrPPM)))!=nrow(datasource))
+{
+data<-datasource
+data <-data %>% rename(Ag=AgPPM,As=AsPPM,Cu=CuPPM,La=LaPPM,
+Mo=MoPPM,Ni=NiPPM,Pb=PbPPM ,Sr= SrPPM,Th=ThPPM, U=UPPM,V=VPPM,Zn=ZnPPM,Zr=ZrPPM)
+data<-subset(data, select = c(Project,SiteID,SampleID,DepthFrom,DepthTo,Ag,As,Cu,La,Mo,Ni,Pb,Sr,Th,U,V,Zn,Zr))
+#data_Complete<-data%>%drop_na(Carra_Model$Variables)
+data_Complete<-data
+data_ToProcess <- data_Complete %>% dplyr::select(Carra_Model$Variables) %>% as.matrix()
+data_ToProcess
+Models <- Carra_Model$Models
+PredictionMatrix <- numeric(length = nrow(data_ToProcess))
+for(i in 1:length(Models)){
+PredictionMatrix <- PredictionMatrix + predict(Models[[i]], data = data_ToProcess)$predictions[,1]
+}
+PredictionMatrix <- PredictionMatrix/length(Models)
+PredictionMatrix
+datasource <- cbind(datasource,CloseValue_Carra = PredictionMatrix)
+}
+if((sum(is.na(datasource$AgPPM)))!=nrow(datasource) &(sum(is.na(datasource$AsPPM)))!=nrow(datasource)&(sum(is.na(datasource$CuPPM)))!=nrow(datasource) &(sum(is.na(datasource$LaPPM)))!=nrow(datasource)&(sum(is.na(datasource$MoPPM)))!=nrow(datasource) & (sum(is.na(datasource$NiPPM)))!=nrow(datasource)&(sum(is.na(datasource$PbPPM)))!=nrow(datasource) &(sum(is.na(datasource$SrPPM)))!=nrow(datasource)&(sum(is.na(datasource$ThPPM)))!=nrow(datasource) &(sum(is.na(datasource$UPPM)))!=nrow(datasource) &(sum(is.na(datasource$ZnPPM)))!=nrow(datasource)&(sum(is.na(datasource$ZrPPM)))!=nrow(datasource))
+{
+data<-datasource
+data <-data %>% rename(Ag=AgPPM,As=AsPPM,Cu=CuPPM,La=LaPPM,
+Mo=MoPPM,Ni=NiPPM,Pb=PbPPM ,Sr= SrPPM,Th=ThPPM, U=UPPM,Zn=ZnPPM,Zr=ZrPPM)
+data<-subset(data, select = c(Project,SiteID,SampleID,DepthFrom,DepthTo,Ag,As,Cu,La,Mo,Ni,Pb,Sr,Th,U,Zn,Zr))
+#data_Complete<-data%>%drop_na(Carra_Model_No_V$Variables)
+data_Complete<-data
+data_ToProcess <- data_Complete %>% dplyr::select(Carra_Model_No_V$Variables) %>% as.matrix()
+data_ToProcess
+Models <- Carra_Model_No_V$Models
+PredictionMatrix <- numeric(length = nrow(data_ToProcess))
+for(i in 1:length(Models)){
+PredictionMatrix <- PredictionMatrix + predict(Models[[i]], data = data_ToProcess)$predictions[,1]
+}
+PredictionMatrix <- PredictionMatrix/length(Models)
+datasource <- cbind(datasource,CloseValue_Carra_Model_No_V = PredictionMatrix)
+}
+#####
+if((sum(is.na(datasource$CrPPM)))!=nrow(datasource) &(sum(is.na(datasource$ZrPPM)))!=nrow(datasource)&
+(sum(is.na(datasource$ZnPPM)))!=nrow(datasource) &(sum(is.na(datasource$CoPPM)))!=nrow(datasource) &
+(sum(is.na(datasource$VPPM)))!=nrow(datasource)&(sum(is.na(datasource$SPPM)))!=nrow(datasource) &
+(sum(is.na(datasource$MgPPM)))!=nrow(datasource)&(sum(is.na(datasource$KPPM)))!=nrow(datasource) &
+(sum(is.na(datasource$TiPPM)))!=nrow(datasource)&(sum(is.na(datasource$FePPM)))!=nrow(datasource) &
+(sum(is.na(datasource$PPPM)))!=nrow(datasource))
+{
+data<-datasource
+data
+data <-data %>% rename(Al_pct_BESTEL=AlPPM,Ca_pct_BESTEL=CaPPM,K_pct_BESTEL=KPPM,Na_pct_BESTEL=NaPPM,
+Sb_ppm_BESTEL=SbPPM,Ti_pct_BESTEL=TiPPM,Ag_ppm_BEST_D=AgPPM,As_ppm_BEST_D= AsPPM,
+Co_ppm_BEST_D=CoPPM, Fe_ppm_BEST_D=FePPM, Mn_ppm_BEST_D=MnPPM,Mo_ppm_BEST_D=MoPPM,
+Ni_ppm_BEST_D=NiPPM, Pb_ppm_BEST_D=PbPPM, S_pct_BEST_D=SPPM,U_ppm_BEST_D=UPPM,
+Zn_pct_BEST_D=ZnPPM)
+data$Al_pct_BESTEL=data$Al_pct_BESTEL/10000
+data$Ca_pct_BESTEL=data$Ca_pct_BESTEL/10000
+data$K_pct_BESTEL=data$K_pct_BESTEL/10000
+data$Na_pct_BESTEL=data$Na_pct_BESTEL/10000
+data$Ti_pct_BESTEL=data$Ti_pct_BESTEL/10000
+data$S_pct_BEST_D=data$S_pct_BEST_D/10000
+data$Zn_pct_BEST_D=data$Zn_pct_BEST_D/10000
+data<-subset(data, select = c(Project,SiteID,SampleID,DepthFrom,DepthTo,Al_pct_BESTEL,
+Ca_pct_BESTEL, K_pct_BESTEL, Na_pct_BESTEL, Sb_ppm_BESTEL,
+Ti_pct_BESTEL, Ag_ppm_BEST_D, As_ppm_BEST_D, Co_ppm_BEST_D,
+Fe_ppm_BEST_D, Mn_ppm_BEST_D, Mo_ppm_BEST_D, Ni_ppm_BEST_D,
+Pb_ppm_BEST_D, S_pct_BEST_D, U_ppm_BEST_D, Zn_pct_BEST_D))
+data
+data_Complete <-data %>% drop_na(Starra_RDS_Model$Variables)
+data_Complete
+data_ToProcess <- data %>% dplyr::select(Starra_RDS_Model$Variables) %>% as.matrix()
+data_ToProcess
+pred_res <- predict(object = Starra_Model_xgb_Model, newdata = data_ToProcess)
+datasource <- cbind(datasource,CloseValue_Starra = pred_res)
+}
+datasource
+runApp()

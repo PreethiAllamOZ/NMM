@@ -7,7 +7,7 @@
 #    http://shiny.rstudio.com/
 #
 source("./global.R")
-
+library(DT)
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output,session) {
@@ -18,7 +18,6 @@ shinyServer(function(input, output,session) {
     req(input$file1)
     df <- read.csv(input$file1$datapath, stringsAsFactors = FALSE)
     k<-Model(df)
-    #df$predictions<-predict(irisModel, newdata = df, type ="class")
     return(k)
     
   })
@@ -26,10 +25,16 @@ shinyServer(function(input, output,session) {
   output$mytable = DT::renderDataTable({
     req(input$file1)
     
-    return(DT::datatable(reactiveDF(), options = list(pageLength = 100), filter = c("top")))
+    #datatable(reactiveDF)%>%formatStyle('CloseValue_WM')
+    return(DT::datatable(reactiveDF(), options = list(pageLength = 100), filter = c("top"))%>% 
+             formatStyle('CloseValue_WM', backgroundColor =  c('lightyellow'))%>%
+             formatStyle('CloseValue_Carra_Model_No_V', backgroundColor =  c('lightgreen'))%>%
+             formatStyle('CloseValue_Carra_Model', backgroundColor =  c('lightgray'))%>%
+             formatStyle('CloseValue_Starra', backgroundColor =  c('wheat'))%>%
+             formatStyle('CloseValue_Promhill_Model', backgroundColor =  c('azure')))
   })
   
-  
+  #'CloseValue_Carra_Model_No_V','CloseValue_Carra_Model','CloseValue_Starra','CloseValue_Promhill_Model'
   # Downloadable csv of selected dataset ----
   output$DownloadData2 <- downloadHandler(
     filename = function() {

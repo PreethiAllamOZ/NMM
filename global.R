@@ -6,6 +6,8 @@ require(shinyjs)
 require(ranger)
 require(tools)
 
+library(DT)
+
 library(shiny)
 library(magrittr)
 library(xgboost)
@@ -320,7 +322,7 @@ Model<-function(datasource)
     
     d=(setdiff(ReqVariables,AvailableVariables))
     Missing_elements="Missing element/s"
-    datasource <- cbind(datasource,CloseValue_Promhill_Model_No_V = paste(Missing_elements,d ))
+    datasource <- cbind(datasource,CloseValue_Promhill_Model = paste(Missing_elements,d ))
   }
 
 

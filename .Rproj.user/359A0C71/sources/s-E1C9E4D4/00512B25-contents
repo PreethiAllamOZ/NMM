@@ -54,10 +54,10 @@ shinyUI(
                               tabPanel("Upload File Format", h2("Upload File Format"), br(),h4("The Applications requires Data to be in specific file format"), br(),
                                        h4(" 1. File should be in .csv format only"), br(),
                                      #  h4(" - PROJECT,SiteID,DEPTH_FROM,DEPTH_TO,SampleID"), br(),
-                                       h4(" 2. All the Assay concetrations should be in PPM"), br(),
+                                       h4(" 2. All the Assay concentrations should be in PPM"), br(),
                                      
                                        h4(" 3. Element name should be followed by PPM, for example Cu should be named CuPPM"), br(),
-                                       h4(" 4. Here is the Sample"), br(),
+                                       h4(" 4. Here is the expected file"), br(),
                                        downloadButton("DownloadData2",label = "Download Results")),
                               tabPanel("Different Models", h2("Required Variables Models"),br(), 
                                        h4("Each of the Models require a set of variables to predict"), br(),

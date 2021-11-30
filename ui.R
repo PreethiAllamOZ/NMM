@@ -1,3 +1,4 @@
+library(DT)
 shinyUI(
   fluidPage(     theme = 'oz_theme.css',
                  # enable shinyalert modals:
@@ -34,7 +35,7 @@ shinyUI(
                               downloadButton("DownloadData",label = "Download Results")
                             ),
                             mainPanel(
-                              DT::dataTableOutput("mytable")
+                              DT::dataTableOutput("mytable",)
                             )
                    ),
                    
@@ -53,12 +54,13 @@ shinyUI(
                               tabPanel("Upload File Format", h2("Upload File Format"), br(),h4("The Applications requires Data to be in specific file format"), br(),
                                        h4(" 1. File should be in .csv format only"), br(),
                                      #  h4(" - PROJECT,SiteID,DEPTH_FROM,DEPTH_TO,SampleID"), br(),
-                                       h4(" 2. All the Assay concetrations should be in PPM"), br(),
-                                       h4(" 3. Element names is followed by PPM example, Cu is to be named as CuPPM"), br(),
-                                       h4(" 4. Here is the Sample"), br(),
+                                       h4(" 2. All the Assay concentrations should be in PPM"), br(),
+                                     
+                                       h4(" 3. Element name should be followed by PPM, for example Cu should be named CuPPM"), br(),
+                                       h4(" 4. Here is the expected file"), br(),
                                        downloadButton("DownloadData2",label = "Download Results")),
                               tabPanel("Different Models", h2("Required Variables Models"),br(), 
-                                       h4(" Each of the Models require a set of variables to be able predict the Near Miss scores, below are the variables w.r.t each model"), br(),
+                                       h4("Each of the Models require a set of variables to predict"), br(),
                                        h4("Carrapateena Model") ,h5("AgPPM, AsPPM, CuPPM, LaPPM, MoPPM, NiPPM, PbPPM, SrPPM, ThPPM, UPPM, VPPM, ZnPPM, ZrPPM"), br(),
                                        h4("Carrapateena(No Vanadium) Model"),h5("AgPPM, AsPPM, CuPPM, LaPPM, MoPPM, NiPPM, PbPPM, SrPPM, ThPPM, UPPM,ZnPPM, ZrPPM"), br(),
                                        h4("Prominent Hill Distance Regression Model"), h5("CuPPM, AuPPM, AgPPM, UPPM, FePPM, AsPPM, BaPPM, BiPPM, CaPPM, CePPM, CoPPM, KPPM, LaPPM, MgPPM, MnPPM,MoPPM, NaPPM,NiPPM,PPPM,PbPPM, SbPPM, SPPM,SrPPM,TiPPM ,YPPM, ZnPPM"), br(),

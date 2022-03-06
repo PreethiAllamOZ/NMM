@@ -36,105 +36,7 @@ Model<-function(datasource)
   datasource[,6:ncol(datasource)]<-sapply(datasource[,6:ncol(datasource)],as.numeric)
   datasource[,6:ncol(datasource)]<-sapply(datasource[,6:ncol(datasource)],as.numeric)
   
-  if (all(c('CrPPM','ZrPPM','ZnPPM','CoPPM','VPPM','SPPM','MgPPM' ,'KPPM','TiPPM', 'FePPM', 'PPPM') %in% names(datasource)==TRUE) )
-  {
-    data<-datasource
-    #change column names 
-    data <-data %>% rename(Cr_ppm=CrPPM,Zr_ppm=ZrPPM,Zn_ppm=ZnPPM,Co_ppm=CoPPM,V_ppm=VPPM,S_pc=SPPM,Mg_pc=MgPPM ,K_pc= KPPM,Ti_pc=TiPPM, Fe_pc=FePPM, P_pc=PPPM)
-    # #change PPM to PC
-    data$S_pc=data$S_pc/10000
-    data$Mg_pc=data$Mg_pc/10000
-    data$K_pc=data$K_pc/10000
-    data$Ti_pc=data$Ti_pc/10000
-    data$Fe_pc=data$Fe_pc/10000
-    data$P_pc=data$P_pc/10000
-    data<-subset(data, select = c(PROJECT,SiteID,SampleID,DEPTH_FROM,DEPTH_TO,S_pc,Mg_pc,K_pc,Ti_pc,Fe_pc,P_pc,Cr_ppm,Zr_ppm,Zn_ppm,Co_ppm,V_ppm))
-    data_Complete <-data %>% drop_na(West_musgraves_RDS_Model$Variables)
-    data_ToProcess <- data_Complete %>% dplyr::select(West_musgraves_RDS_Model$Variables) %>% as.matrix()
-    pred_res <- predict(object = West_musgraves_xgb_Model, newdata = data_ToProcess)
-    datasource <- cbind(datasource,CloseValue_WM = round(pred_res, digits=4))
-  } else {
-    ReqVariables =c('CrPPM','ZrPPM','ZnPPM','CoPPM','VPPM','SPPM','MgPPM' ,'KPPM','TiPPM', 'FePPM', 'PPPM')
-    ReqVariables
-    datasource <- datasource[,colSums(is.na(datasource))<nrow(datasource)]
-    datasource
-    AvailableVariables=c(colnames(datasource))
-    AvailableVariables
-    
-    d=(setdiff(ReqVariables,AvailableVariables))
-    Missing_elements="Missing element/s"
-    datasource <- cbind(datasource,CloseValue_WM = paste(Missing_elements,d ))
-  }
 
-  if (all(c('AgPPM','AsPPM','CuPPM','LaPPM',
-            'MoPPM','NiPPM','PbPPM' ,'SrPPM','ThPPM','UPPM','ZnPPM','ZrPPM') %in% names(datasource)==TRUE) )
-  {
-    data<-datasource
-    data <-data %>% rename(Ag=AgPPM,As=AsPPM,Cu=CuPPM,La=LaPPM,
-                           Mo=MoPPM,Ni=NiPPM,Pb=PbPPM ,Sr= SrPPM,Th=ThPPM, U=UPPM,Zn=ZnPPM,Zr=ZrPPM)
-
-    data<-subset(data, select = c(PROJECT,SiteID,SampleID,DEPTH_FROM,DEPTH_TO,Ag,As,Cu,La,Mo,Ni,Pb,Sr,Th,U,Zn,Zr))
-    #data_Complete<-data%>%drop_na(Carra_Model$Variables)
-    data_Complete<-data
-    data_ToProcess <- data_Complete %>% dplyr::select(Carra_Model_No_V$Variables) %>% as.matrix()
-    data_ToProcess
-    Models <- Carra_Model_No_V$Models
-    PredictionMatrix <- numeric(length = nrow(data_ToProcess))
-    for(i in 1:length(Models)){
-      PredictionMatrix <- PredictionMatrix + predict(Models[[i]], data = data_ToProcess)$predictions[,1]
-    }
-
-    PredictionMatrix <- PredictionMatrix/length(Models)
-    PredictionMatrix
-
-    datasource <- cbind(datasource,CloseValue_Carra_Model_No_V = round(PredictionMatrix, digits=4))
-
-  } else {
-    ReqVariables =c('AgPPM','AsPPM','CuPPM','LaPPM',
-                    'MoPPM','NiPPM','PbPPM' ,'SrPPM','ThPPM','UPPM','ZnPPM','ZrPPM')
-    ReqVariables
-    datasource <- datasource[,colSums(is.na(datasource))<nrow(datasource)]
-    datasource
-    AvailableVariables=c(colnames(datasource))
-    AvailableVariables
-    
-    d=(setdiff(ReqVariables,AvailableVariables))
-    Missing_elements="Missing element/s"
-    datasource <- cbind(datasource,CloseValue_Carra_Model_No_V = paste(Missing_elements,d ))
-  }
-  if (all(c('AgPPM','AsPPM','CuPPM','LaPPM',
-            'MoPPM','NiPPM','PbPPM' ,'SrPPM','ThPPM','UPPM','VPPM','ZnPPM','ZrPPM') %in% names(datasource)==TRUE) ) {
-    data<-datasource
-    data <-data %>% rename(Ag=AgPPM,As=AsPPM,Cu=CuPPM,La=LaPPM,
-                           Mo=MoPPM,Ni=NiPPM,Pb=PbPPM ,Sr= SrPPM,Th=ThPPM, U=UPPM, V=VPPM,Zn=ZnPPM,Zr=ZrPPM)
-
-    data<-subset(data, select = c(PROJECT,SiteID,SampleID,DEPTH_FROM,DEPTH_TO,Ag,As,Cu,La,Mo,Ni,Pb,Sr,Th,U,V,Zn,Zr))
-    #data_Complete<-data%>%drop_na(Carra_Model_No_V$Variables)
-    data_Complete<-data
-    data_ToProcess <- data_Complete %>% dplyr::select(Carra_Model$Variables) %>% as.matrix()
-    data_ToProcess
-    Models <- Carra_Model$Models
-    PredictionMatrix <- numeric(length = nrow(data_ToProcess))
-    for(i in 1:length(Models)){
-      PredictionMatrix <- PredictionMatrix + predict(Models[[i]], data = data_ToProcess)$predictions[,1]
-    }
-    
-    PredictionMatrix <- PredictionMatrix/length(Models)
-    datasource <- cbind(datasource,CloseValue_Carra_Model = round(PredictionMatrix, digits = 4))
-
-  } else {
-    ReqVariables =c('AgPPM','AsPPM','CuPPM','LaPPM',
-                    'MoPPM','NiPPM','PbPPM' ,'SrPPM','ThPPM','UPPM','VPPM','ZnPPM','ZrPPM')
-    ReqVariables
-    datasource <- datasource[,colSums(is.na(datasource))<nrow(datasource)]
-    datasource
-    AvailableVariables=c(colnames(datasource))
-    AvailableVariables
-    
-    d=(setdiff(ReqVariables,AvailableVariables))
-    Missing_elements="Missing element/s"
-    datasource <- cbind(datasource,CloseValue_Carra_Model = paste(Missing_elements,d ))
-  }
   if (all(c('AlPPM','CaPPM','KPPM','NaPPM',
             'SbPPM','TiPPM','AgPPM','AsPPM',
             'CoPPM', 'FePPM', 'MnPPM','MoPPM',
@@ -250,16 +152,16 @@ Model<-function(datasource)
           x = new_data,
           y = prom_hill_distance_model$Models$training,
           by = c("SAMPLE_ID", "HOLE_ID"))
-      
+
       to_model_new <- # samples in new_data NOT IN training data
         anti_join(
           x = new_data,
           y = prom_hill_distance_model$Models$training,
           by = c("SAMPLE_ID", "HOLE_ID"))
-      
+
       message(paste("of which there are", nrow(to_model_new), "NEW data"))
       message(paste("and which there are", nrow(to_model_old), "data used in training"))
-      
+      # 
       
       # predict the old and new data
       pred_xgb_old <-
@@ -267,21 +169,21 @@ Model<-function(datasource)
         left_join(
           prom_hill_distance_model$Models$training,
           by = c("SAMPLE_ID", "HOLE_ID"))
-      
+
       pred_xgb_new <-
         to_model_new %>%
         mutate(PH_distance_pred =
                  predict(object = prom_hill_distance_model$Models$model,
                          newdata = to_model_new))
-      
-      # join those:
-      out_data <- 
+
+      #join those:
+      out_data <-
         bind_rows(
           pred_xgb_old,
           pred_xgb_new
-        ) %>% 
+        ) %>%
         dplyr::select(SAMPLE_ID, HOLE_ID, PH_distance_pred)
-      
+
       # Pseudo-probability (0-1):
       prob_distance <- 2500 # pseudo prob of being within this distance
       prob_z <- 4 # "SD" of regression val is PH_distance_pred/prob_z

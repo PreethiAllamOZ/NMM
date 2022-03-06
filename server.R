@@ -27,11 +27,12 @@ shinyServer(function(input, output,session) {
     
     #datatable(reactiveDF)%>%formatStyle('CloseValue_WM')
     return(DT::datatable(reactiveDF(), options = list(pageLength = 100), filter = c("top"))%>% 
-             formatStyle('CloseValue_WM', backgroundColor =  c('lightyellow'))%>%
-             formatStyle('CloseValue_Carra_Model_No_V', backgroundColor =  c('lavender'))%>%
-             formatStyle('CloseValue_Carra_Model', backgroundColor =  c('lightgray'))%>%
-             formatStyle('CloseValue_Starra', backgroundColor =  c('wheat'))%>%
-             formatStyle('CloseValue_Promhill_Model', backgroundColor =  c('azure')))
+             # formatStyle('CloseValue_WM', backgroundColor =  c('lightyellow'))%>%
+             # formatStyle('CloseValue_Carra_Model_No_V', backgroundColor =  c('lavender'))%>%
+             # formatStyle('CloseValue_Carra_Model', backgroundColor =  c('lightgray'))%>%
+             formatStyle('CloseValue_Starra', backgroundColor =  c('wheat')) %>%
+             formatStyle('CloseValue_Promhill_Model', backgroundColor =  c('azure'))
+             )
   })
   
   #'CloseValue_Carra_Model_No_V','CloseValue_Carra_Model','CloseValue_Starra','CloseValue_Promhill_Model'

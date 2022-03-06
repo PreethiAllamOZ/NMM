@@ -58,7 +58,9 @@ shinyUI(
                                      
                                        h4(" 3. Element name should be followed by PPM, for example Cu should be named CuPPM"), br(),
                                        h4(" 4. Here is the expected file"), br(),
-                                       downloadButton("DownloadData2",label = "Download Results")),
+                                       downloadButton("DownloadData2",label = "Download Results"),
+                                       downloadButton("DownloadData3",label = "Download Report")),
+                              
                               tabPanel("Different Models", h2("Required Variables Models"),br(), 
                                        h4("Each of the Models require a set of variables to predict"), br(),
                                        h4("Carrapateena Model") ,h5("AgPPM, AsPPM, CuPPM, LaPPM, MoPPM, NiPPM, PbPPM, SrPPM, ThPPM, UPPM, VPPM, ZnPPM, ZrPPM"), br(),
